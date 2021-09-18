@@ -1,0 +1,59 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: wagoid/commitlint-github-action@v4
+
+  pythontests:
+    strategy:
+      matrix:
+        python-version: ["3.8"]
+    name: "Python ${{ matrix.python-version }}"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+            python-version: "${{ matrix.python-version }}"
+      - name: Install dependencies on ${{ matrix.python-version }}"
+        run: |
+          set -xe
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+
+      - name: "Run Black check on ${{ matrix.python-version }}"
+        run: make check-black
+
+      - name: "Run pylint check on ${{ matrix.python-version }}"
+        run: make pylint
+
+      - name: "Run pycodestyle check on ${{ matrix.python-version }}"
+        run: make pycodestyle
+
+      - name: "Run flake8 check on ${{ matrix.python-version }}"
+        run: make flake8
+
+      - name: "Run mypy check on ${{ matrix.python-version }}"
+        run: make mypy
+
+      - name: "Run flake8 check on ${{ matrix.python-version }}"
+        run: make flake8
+
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+      - name: Run Shelltest
+        run: make shelltest

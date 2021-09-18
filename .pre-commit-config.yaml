@@ -1,0 +1,91 @@
+  # the hook execution directory in under GITDIR
+repos:
+- repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+  rev: v5.0.0
+  hooks:
+    - id: commitlint
+      stages: [commit-msg]
+      additional_dependencies: ['@commitlint/config-conventional']
+
+- repo: local
+  hooks:
+    - id: black
+      name: black
+      description: "Black: The uncompromising Python code formatter"
+      language: system
+      entry: make black
+      require_serial: true
+      stages: [commit]
+      types: [python]
+
+    - id: check-black
+      name: check-black
+      description: "check-black: Check python code formatter"
+      language: system
+      entry: make check-black
+      require_serial: true
+      stages: [push]
+      types: [python]
+
+    - id: shellcheck
+      name: shellcheck
+      description: "shellcheck: Check shell script syntax rule"
+      language: system
+      entry: make shellcheck
+      require_serial: true
+      stages: [push]
+      types: [shell]
+
+    - id: pylint
+      name: pylint
+      description: "Pylint: Checks for errors in Python code"
+      language: system
+      entry: make pylint
+      require_serial: true
+      stages: [push]
+      types: [python]
+
+    - id: pycodestyle
+      name: pycodestyle
+      description: "pycodestyle: Check your Python code against styles conventions in PEP 8"
+      language: system
+      entry: make pycodestyle
+      require_serial: true
+      stages: [push]
+      types: [python]
+
+    - id: flake8
+      name: flake8
+      description: "flake8: Tool For Style Guide Enforcement"
+      language: system
+      entry: make flake8
+      require_serial: true
+      stages: [push]
+      types: [python]
+
+    - id: mypy
+      name: mypy
+      description: "mypy: an optional static type checker for Python"
+      language: system
+      entry: make mypy
+      require_serial: true
+      stages: [push]
+      types: [python]
+
+    - id: pytest
+      name: pytest
+      description: "pytest: run python pytest unit test"
+      language: system
+      entry: make pytest
+      require_serial: true
+      stages: [push]
+      types: [python]
+
+    - id: shelltest
+      name: shelltest
+      description: "shelltest: check the syntax of a script"
+      language: system
+      entry: make shelltest
+      require_serial: true
+      stages: [push]
+      types: [shell]
