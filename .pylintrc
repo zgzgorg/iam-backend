@@ -120,11 +120,13 @@ disable=print-statement,
         C0103,
         W1401,
         E203,
-        C0326
+        C0326,
+        W0603
 # C0103: invalid-name
 # W1401: anomalous-backslash-in-string
 # E203: whitespace before ‘:’
 # C0326: bad-whitespace
+# W0603: global-statement
 
 
 # Enable the message, report, category or checker with the given id(s). You can

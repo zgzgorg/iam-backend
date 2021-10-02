@@ -72,6 +72,15 @@ repos:
       stages: [push]
       types: [python]
 
+    - id: pytype
+      name: pytype
+      description: "pytype: an optional static type checker for Python"
+      language: system
+      entry: make pytype
+      require_serial: true
+      stages: [push]
+      types: [python]
+
     - id: pytest
       name: pytest
       description: "pytest: run python pytest unit test"

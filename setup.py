@@ -5,7 +5,7 @@ import os
 from typing import List
 import setuptools  # type: ignore
 
-PACKAGE_NAME = "zgzg_iam"
+PACKAGE_NAME = "zgiam"
 
 
 def get_version() -> str:
