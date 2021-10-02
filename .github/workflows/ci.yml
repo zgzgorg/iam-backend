@@ -33,11 +33,14 @@ jobs:
       - name: "Run Black check on ${{ matrix.python-version }}"
         run: make check-black
 
-      - name: "Run pylint check on ${{ matrix.python-version }}"
-        run: make pylint
+      - name: "Run flake8 check on ${{ matrix.python-version }}"
+        run: make flake8
 
       - name: "Run pycodestyle check on ${{ matrix.python-version }}"
         run: make pycodestyle
+
+      - name: "Run pylint check on ${{ matrix.python-version }}"
+        run: make pylint
 
       - name: "Run flake8 check on ${{ matrix.python-version }}"
         run: make flake8
@@ -45,8 +48,8 @@ jobs:
       - name: "Run mypy check on ${{ matrix.python-version }}"
         run: make mypy
 
-      - name: "Run flake8 check on ${{ matrix.python-version }}"
-        run: make flake8
+      - name: "Run pytype check on ${{ matrix.python-version }}"
+        run: make pytype
 
   shellcheck:
     name: Shellcheck

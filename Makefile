@@ -28,7 +28,7 @@ test: shelltest pytest
 
 
 .PHONY: lint
-lint: check-black pylint pycodestyle flake8 mypy shellcheck
+lint: check-black pylint pycodestyle flake8 mypy pytype shellcheck
 
 
 .PHONY: format
