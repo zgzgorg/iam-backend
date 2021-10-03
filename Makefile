@@ -2,7 +2,7 @@ GITDIR := $(shell git rev-parse --show-toplevel)
 
 FIND_GITIGNORE_FILTER = 'for path; do git check-ignore -q "$$path" || echo "$$path" ;done'
 
-PY_SOURCE_GLOB = $(shell find * -not -path '*/\.*' -name "*.py" -exec sh -c \
+PY_SOURCE_GLOB = $(shell find * -not -path '*/\.*' -not -path 'alembic*' -name "*.py" -exec sh -c \
 						  	$(FIND_GITIGNORE_FILTER) \
 					      find-sh {} +)
 SH_SOURCE_GLOB = $(shell find * -not -path '*/\.*' -type f -name "*.sh" -exec sh -c \
@@ -46,16 +46,6 @@ print_target:
 clean:
 	@$(MAKE) target=$@ print_target
 	rm -rf dist/* .pytype .mypy_cache
-
-
-.PHONY: dist
-dist:
-	@$(MAKE) target=$@ print_target
-	@if [ -f "setup.py" ]; then \
-		python3 setup.py sdist bdist_wheel; \
-	else \
-		echo "'setup.py' not found. Please ensure this folder is a package"; \
-	fi
 
 
 .PHONY: pytest
@@ -255,3 +245,22 @@ bump-version:
 update-requirements:
 	pip-compile -q -o requirements.txt requirements.in
 	pip-compile -q -o requirements-dev.txt requirements-dev.in
+
+
+.PHONY: upgrade-requirements
+upgrade-requirements:
+	pip-compile -U -q -o requirements.txt requirements.in
+	pip-compile -U -q -o requirements-dev.txt requirements-dev.in
+
+
+.PHOYN: generate-migration
+generate-migration:
+# Work with compare live database
+	@read -p "Enter migration message(no space):" message; \
+	[ -z "$$message" ] && echo "ERROR: Please enter message" && exit 1; \
+    alembic revision --autogenerate -m "$$message"
+
+
+.PHOYN: update-schema
+update-schema:
+	alembic upgrade $${1:-head}

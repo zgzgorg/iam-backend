@@ -24,6 +24,8 @@ filelock==3.0.12
     # via virtualenv
 flake8==3.9.2
     # via -r requirements-dev.in
+greenlet==1.1.2
+    # via sqlalchemy
 identify==2.2.14
     # via pre-commit
 importlab==0.6.1
@@ -39,7 +41,9 @@ mccabe==0.6.1
     #   flake8
     #   pylint
 mypy==0.910
-    # via -r requirements-dev.in
+    # via
+    #   -r requirements-dev.in
+    #   sqlalchemy
 mypy-extensions==0.4.3
     # via
     #   black
@@ -87,6 +91,10 @@ six==1.16.0
     # via
     #   pytype
     #   virtualenv
+sqlalchemy[mypy]==1.4.25
+    # via -r requirements-dev.in
+sqlalchemy2-stubs==0.0.2a17
+    # via sqlalchemy
 tabulate==0.8.9
     # via pytype
 toml==0.10.2
@@ -108,6 +116,7 @@ typing-extensions==3.10.0.2
     #   libcst
     #   mypy
     #   pylint
+    #   sqlalchemy2-stubs
     #   typing-inspect
 typing-inspect==0.7.1
     # via libcst

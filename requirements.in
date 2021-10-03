@@ -1,3 +1,6 @@
+# due to https://github.com/sqlalchemy/alembic/issues/934
+alembic==1.6.5
+
 flask
 Flask-SQLAlchemy
 psycopg2-binary
