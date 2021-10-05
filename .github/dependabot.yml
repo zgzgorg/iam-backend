@@ -1,10 +1,13 @@
 version: 2
 updates:
-- package-ecosystem: npm
+- package-ecosystem: pip
   directory: "/"
   schedule:
-    interval: daily
+    interval: weekly
   commit-message:
     prefix: "chore"
     include: "scope"
+  ignore:
+    - dependency-name: "alembic"
+      versions: ["1.7.3"]
   open-pull-requests-limit: 10
