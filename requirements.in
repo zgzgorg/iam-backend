@@ -1,5 +1,5 @@
 # due to https://github.com/sqlalchemy/alembic/issues/934
-alembic==1.6.5
+alembic==1.7.2
 
 flask
 Flask-SQLAlchemy
