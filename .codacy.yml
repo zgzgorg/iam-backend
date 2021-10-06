@@ -16,9 +16,6 @@ engines:
   markdownlint:
     exclude_paths:
       - "zgiam/**"
-  remark-lint:
-    exclude_paths:
-      - "zgiam/**"
   duplication:
     config:
       languages:
