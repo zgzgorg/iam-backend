@@ -1,0 +1,28 @@
+---
+engines:
+  bandit:
+    exclude_paths:
+      - "**/docs/**"
+  prospector:
+    exclude_paths:
+      - "**/docs/**"
+  pylintpython3:
+    exclude_paths:
+      - "**/docs/**"
+  shellcheck:
+    exclude_paths:
+      - "**/zgiam/**"
+      - "**/docs/**"
+  markdownlint:
+    exclude_paths:
+      - "**/zgiam/**"
+  remark-lint:
+    exclude_paths:
+      - "**/zgiam/**"
+  duplication:
+    config:
+      languages:
+        - "python"
+exclude_paths:
+  - "**/alembic/**"
+  - "**/tests/**"
