@@ -1,5 +1,7 @@
 # IAM Backend
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e00783cf6d234f67ba3c0527918daddb)](https://app.codacy.com/gh/zgzgorg/iam-backend?utm_source=github.com&utm_medium=referral&utm_content=zgzgorg/iam-backend&utm_campaign=Badge_Grade_Settings)
+
 This is Identity Access Management(IAM) system using with g-suite
 
 ## Config file
