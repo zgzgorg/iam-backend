@@ -1,7 +1,5 @@
 """Config module"""
 import typing
-from typing import Union, Optional
-
 import os
 import configparser
 import logging
@@ -12,11 +10,11 @@ from . import log
 
 logger: logging.Logger = log.get_logger(__name__)
 
-_CONFIG: Union[configparser.ConfigParser, None] = None
+_CONFIG: typing.Union[configparser.ConfigParser, None] = None
 _ENV_PREFIX: str = "IAM"
 
 
-def get_config(reload: bool = False) -> Optional[configparser.ConfigParser]:
+def get_config(reload: bool = False) -> typing.Optional[configparser.ConfigParser]:
     """get config
 
     Args:
@@ -48,7 +46,7 @@ def _load_local_config() -> None:
 
 
 @typing.no_type_check
-def _load_environ_config() -> None:  # type: ignore
+def _load_environ_config() -> None:
     for section in _CONFIG.sections():
         for option in _CONFIG.options(section):
             config_value = _CONFIG.get(section, option)
@@ -71,7 +69,9 @@ def _load_config() -> None:
         logger.info("Logging format updated")
 
     #  update debug
-    if _CONFIG.getboolean("CORE", "DEBUG") or _CONFIG.getboolean("FLASK", "DEBUG"):
+    if _CONFIG.getboolean("CORE", "DEBUG", fallback=False) or _CONFIG.getboolean(
+        "FLASK", "DEBUG", fallback=False
+    ):
         _CONFIG.set("FLASK", "DEBUG", "TRUE")
         _CONFIG.set("CORE", "DEBUG", "TRUE")
         logging.getLogger().setLevel(logging.DEBUG)

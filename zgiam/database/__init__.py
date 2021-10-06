@@ -1,17 +1,17 @@
 """Database connector"""
-from typing import Union
+import typing
 
 import flask_sqlalchemy
-from flask import Flask
+import flask
 
 import zgiam.lib.config
 import zgiam.core
 
 
-_DB: Union[flask_sqlalchemy.SQLAlchemy, None] = None
+_DB: typing.Union[flask_sqlalchemy.SQLAlchemy, None] = None
 
 
-def _config_db(app: Flask) -> None:
+def _config_db(app: flask.Flask) -> None:
     config = zgiam.lib.config.get_config()["DATABASE"]  # type: ignore
     # TODO: better mapping
     type_ = config.get("TYPE").lower()
@@ -22,12 +22,12 @@ def _config_db(app: Flask) -> None:
     elif type_ == "postgresql":
         url = (
             f"postgresql://{config.get('USER')}:{config.get('PASSWORD')}"
-            f"@{config.get('HOST')}/{config.get('DBNAME')}"
+            f"@{config.get('HOST')}:{config.get('PORT')}/{config.get('DBNAME')}"
         )
     elif type_ == "mysql":
         url = (
             f"mysql+pymysql://{config.get('USER')}:{config.get('PASSWORD')}"
-            f"@{config.get('HOST')}/{config.get('DBNAME')}"
+            f"@{config.get('HOST')}:{config.get('PORT')}/{config.get('DBNAME')}"
         )
     else:
         raise TypeError(
