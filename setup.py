@@ -2,7 +2,7 @@
 setup
 """
 import os
-from typing import List
+import typing
 import setuptools  # type: ignore
 
 PACKAGE_NAME = "zgiam"
@@ -15,15 +15,19 @@ def get_version() -> str:
         str: version
     """
     version = "0.0.0"
-
-    with open(os.path.join(os.path.dirname(__file__), "VERSION"), encoding="utf-8") as version_fh:
-        # Get X.Y.Z
-        version = version_fh.read().strip()
+    try:
+        with open(
+            os.path.join(os.path.dirname(__file__), "VERSION"), encoding="utf-8"
+        ) as version_fh:
+            # Get X.Y.Z
+            version = version_fh.read().strip()
+    except (OSError, IOError):
+        ...
 
     return version
 
 
-def get_install_requires() -> List[str]:
+def get_install_requires() -> typing.List[str]:
     """Gets a list of required python pacakges from requirements.txt file.
 
     Returns:

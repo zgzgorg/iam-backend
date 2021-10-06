@@ -51,6 +51,9 @@ jobs:
       - name: "Run pytype check on ${{ matrix.python-version }}"
         run: make pytype
 
+      - name: "Run pytest check on ${{ matrix.python-version }}"
+        run: PYTHONPATH="." make pytest
+
   shellcheck:
     name: Shellcheck
     runs-on: ubuntu-latest

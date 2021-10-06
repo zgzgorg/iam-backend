@@ -7,7 +7,9 @@
 astroid==2.8.0
     # via pylint
 attrs==21.2.0
-    # via pytype
+    # via
+    #   pytest
+    #   pytype
 backports.entry-points-selectable==1.1.0
     # via virtualenv
 black==21.9b0
@@ -18,6 +20,8 @@ click==8.0.1
     # via
     #   black
     #   pip-tools
+coverage[toml]==6.0
+    # via pytest-cov
 distlib==0.3.2
     # via virtualenv
 filelock==3.0.12
@@ -30,6 +34,8 @@ identify==2.2.14
     # via pre-commit
 importlab==0.6.1
     # via pytype
+iniconfig==1.1.1
+    # via pytest
 isort==5.9.3
     # via pylint
 lazy-object-proxy==1.6.0
@@ -40,6 +46,8 @@ mccabe==0.6.1
     # via
     #   flake8
     #   pylint
+mock==4.0.3
+    # via -r requirements-dev.in
 mypy==0.910
     # via
     #   -r requirements-dev.in
@@ -55,6 +63,8 @@ ninja==1.10.2
     # via pytype
 nodeenv==1.6.0
     # via pre-commit
+packaging==21.0
+    # via pytest
 pathspec==0.9.0
     # via black
 pep517==0.11.0
@@ -66,8 +76,12 @@ platformdirs==2.3.0
     #   black
     #   pylint
     #   virtualenv
+pluggy==1.0.0
+    # via pytest
 pre-commit==2.15.0
     # via -r requirements-dev.in
+py==1.10.0
+    # via pytest
 pycodestyle==2.7.0
     # via
     #   -r requirements-dev.in
@@ -75,6 +89,14 @@ pycodestyle==2.7.0
 pyflakes==2.3.1
     # via flake8
 pylint==2.11.1
+    # via -r requirements-dev.in
+pyparsing==2.4.7
+    # via packaging
+pytest==6.2.5
+    # via
+    #   -r requirements-dev.in
+    #   pytest-cov
+pytest-cov==3.0.0
     # via -r requirements-dev.in
 pytype==2021.9.9
     # via -r requirements-dev.in
@@ -102,13 +124,17 @@ toml==0.10.2
     #   mypy
     #   pre-commit
     #   pylint
+    #   pytest
     #   pytype
 tomli==1.2.1
     # via
     #   black
+    #   coverage
     #   pep517
 typed-ast==1.4.3
     # via pytype
+types-mock==4.0.1
+    # via -r requirements-dev.in
 typing-extensions==3.10.0.2
     # via
     #   astroid
