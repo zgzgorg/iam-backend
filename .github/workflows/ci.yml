@@ -54,6 +54,14 @@ jobs:
       - name: "Run pytest check on ${{ matrix.python-version }}"
         run: PYTHONPATH="." make pytest
 
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          env_vars: OS,PYTHON
+          fail_ci_if_error: true
+          flags: unittests
+          verbose: true
   shellcheck:
     name: Shellcheck
     runs-on: ubuntu-latest
