@@ -1,6 +1,7 @@
 # IAM Backend
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/40c7e61928a844ff857374bce18dee5d)](https://www.codacy.com/gh/zgzgorg/iam-backend/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zgzgorg/iam-backend&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/40c7e61928a844ff857374bce18dee5d)](https://www.codacy.com/gh/zgzgorg/iam-backend/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zgzgorg/iam-backend&amp;utm_campaign=Badge_Grade)  [![codecov](https://codecov.io/gh/zgzgorg/iam-backend/branch/master/graph/badge.svg?token=IJHGG265W1)](https://codecov.io/gh/zgzgorg/iam-backend)
+
 This is Identity Access Management(IAM) system using with Google workspace account
 
 ## Config file

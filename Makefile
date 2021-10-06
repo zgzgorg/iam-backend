@@ -52,7 +52,7 @@ clean:
 pytest:
 	@$(MAKE) target=$@ print_target
 	@if [ -d "tests" ]; then \
-		pytest --cov=$(PACKAGE_NAME) --cov-report term-missing tests/; \
+		pytest --cov=$(PACKAGE_NAME) --cov-report xml --cov-report term-missing tests/; \
 	else \
 		echo "'tests' directory does not exist. Please ensure you have unit test in this package"; \
 	fi
