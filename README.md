@@ -1,6 +1,9 @@
 # IAM Backend
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/40c7e61928a844ff857374bce18dee5d)](https://www.codacy.com/gh/zgzgorg/iam-backend/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zgzgorg/iam-backend&amp;utm_campaign=Badge_Grade)  [![codecov](https://codecov.io/gh/zgzgorg/iam-backend/branch/master/graph/badge.svg?token=IJHGG265W1)](https://codecov.io/gh/zgzgorg/iam-backend)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/40c7e61928a844ff857374bce18dee5d)](https://www.codacy.com/gh/zgzgorg/iam-backend/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zgzgorg/iam-backend&amp;utm_campaign=Badge_Grade)
+[![codecov](https://codecov.io/gh/zgzgorg/iam-backend/branch/master/graph/badge.svg?token=IJHGG265W1)](https://codecov.io/gh/zgzgorg/iam-backend)
+[![Maintainability](https://api.codeclimate.com/v1/badges/30c4351f9da4107634cf/maintainability)](https://codeclimate.com/github/zgzgorg/iam-backend/maintainability)
+[![Actions Status](https://github.com/zgzgorg/iam-backend/workflows/CI/badge.svg)](https://github.com/zgzgorg/iam-backend/actions)
 
 This is Identity Access Management(IAM) system using with Google workspace account
 
