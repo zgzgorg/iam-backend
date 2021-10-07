@@ -23,9 +23,21 @@ jobs:
       - uses: actions/setup-python@v2
         with:
             python-version: "${{ matrix.python-version }}"
-      - name: Install dependencies on ${{ matrix.python-version }}"
+
+      - name: Enable shell output on ${{ matrix.python-version }}"
         run: |
           set -xe
+
+      - uses: actions/cache@v2
+        id:   cache
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies on ${{ matrix.python-version }}"
+        run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
