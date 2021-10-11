@@ -3,7 +3,7 @@
 import pytest
 import sqlalchemy.exc
 
-from mock_database import db  # noqa: F401
+from tests.mocks.mock_database import db  # noqa: F401
 import zgiam.models
 
 
@@ -37,8 +37,13 @@ def test_duplicate_user_create(db):
     account = zgiam.models.Account(
         email="william@iam.test", first_name="william", last_name="chen", id="will"
     )
+    db.session.add(account)
+    db.session.commit()
+    duplicate_account = zgiam.models.Account(
+        email="william@iam.test", first_name="william", last_name="chen", id="will"
+    )
     with pytest.raises(sqlalchemy.exc.IntegrityError):
-        db.session.add(account)
+        db.session.add(duplicate_account)
         db.session.commit()
     db.session.rollback()
 
@@ -48,10 +53,14 @@ def test_create_user_miss_email(db):
     with pytest.raises(sqlalchemy.exc.IntegrityError):
         db.session.add(account)
         db.session.commit()
-    db.session.rollback()
 
 
 def test_user_review_by(db):
+    review_account = zgiam.models.Account(
+        email="william@iam.test", first_name="william", last_name="chen", id="will"
+    )
+    db.session.add(review_account)
+    db.session.commit()
     account = zgiam.models.Account(
         email="jason@iam.test", first_name="jason", last_name="chen", review_by_id="will"
     )
@@ -69,12 +78,20 @@ def test_group_create(db):
     assert repr(readback_group) == "Group<name: None, email: team@team.com, id: 1>"
 
 
-def test_user_group_create(db):
+def test_account_group_create(db):
+    review_account = zgiam.models.Account(
+        email="william@iam.test", first_name="william", last_name="chen", id="will"
+    )
+    db.session.add(review_account)
+    db.session.commit()
+    group = zgiam.models.Group(email="team@team.com")
+    db.session.add(group)
+    db.session.commit()
     readback_account = db.session.query(zgiam.models.Account).filter_by(id="will").one()
     readback_group = db.session.query(zgiam.models.Group).filter_by(email="team@team.com").one()
     readback_group.accounts.append(readback_account)
     db.session.commit()
     readback_group = db.session.query(zgiam.models.Group).filter_by(email="team@team.com").one()
     assert readback_group.accounts[0].id == readback_account.id
-    readback_user_group = db.session.query(zgiam.models.UserGroup).all()
-    assert len(readback_user_group) == 1
+    readback_account_group = db.session.query(zgiam.models.AccountGroup).all()
+    assert len(readback_account_group) == 1

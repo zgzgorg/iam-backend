@@ -2,22 +2,21 @@
 import os
 import logging
 import logging.config
-
-from typing import Union
+import typing
 
 from zgiam.lib import DEFAULT_CONFIG_FOLDER
 
-_IS_DEFAULT_CONFIG_LOAD: bool = False
+_is_default_config_load: bool = False
 
 
 def _load_default_config() -> None:
-    global _IS_DEFAULT_CONFIG_LOAD
-    if not _IS_DEFAULT_CONFIG_LOAD:
+    global _is_default_config_load
+    if not _is_default_config_load:
         logging.config.fileConfig(os.path.join(DEFAULT_CONFIG_FOLDER, "logging.ini"))
-    _IS_DEFAULT_CONFIG_LOAD = True
+    _is_default_config_load = True
 
 
-def get_logger(name: Union[str, None] = None) -> logging.Logger:
+def get_logger(name: typing.Union[str, None] = None) -> logging.Logger:
     """get logging function
 
     Args:

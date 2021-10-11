@@ -1,11 +1,16 @@
 """app module to run the application entrypoint"""
 import sys
 import zgiam.core
+import zgiam.api
+import zgiam.database
 
 
 def main():
     """this is the real main"""
-    zgiam.core.get_app().run()
+    app = zgiam.core.get_app()
+    zgiam.database.get_db()
+    zgiam.api.register_blueprint()
+    app.run()
 
 
 def init():

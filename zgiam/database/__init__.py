@@ -8,7 +8,7 @@ import zgiam.lib.config
 import zgiam.core
 
 
-_DB: typing.Union[flask_sqlalchemy.SQLAlchemy, None] = None
+_db: typing.Union[flask_sqlalchemy.SQLAlchemy, None] = None
 
 
 def _config_db(app: flask.Flask) -> None:
@@ -44,9 +44,9 @@ def get_db() -> flask_sqlalchemy.SQLAlchemy:
     Returns:
         flask_sqlalchemy.SQLAlchemy
     """
-    global _DB
-    if not _DB:
+    global _db
+    if not _db:
         app = zgiam.core.get_app()
         _config_db(app)
-        _DB = flask_sqlalchemy.SQLAlchemy(app)
-    return _DB
+        _db = flask_sqlalchemy.SQLAlchemy(app)
+    return _db

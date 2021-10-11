@@ -12,13 +12,13 @@ import sqlalchemy.ext.declarative
 import zgiam.lib.log
 import zgiam.database
 
-BASE = sqlalchemy.ext.declarative.declarative_base()
+base = sqlalchemy.ext.declarative.declarative_base()
 
 
 logger: logging.Logger = zgiam.lib.log.get_logger(__name__)
 
 
-class Account(BASE):
+class Account(base):
     """account table model
     it can be a bot/team account or a user
     """
@@ -34,14 +34,14 @@ class Account(BASE):
     shirt_size = sqlalchemy.Column(sqlalchemy.String(10))
     company = sqlalchemy.Column(sqlalchemy.String(50))
     school = sqlalchemy.Column(sqlalchemy.String(50))
-    register_date = sqlalchemy.Column(sqlalchemy.DateTime, server_default=sqlalchemy.sql.func.now())
+    register_date = sqlalchemy.Column(sqlalchemy.Date, server_default=sqlalchemy.sql.func.now())
     dietary_restriction = sqlalchemy.Column(sqlalchemy.String(255))
     reimbursement_platform = sqlalchemy.Column(sqlalchemy.String(50))
     reimbursement_method = sqlalchemy.Column(sqlalchemy.String(50))
     reimbursement_phone_number = sqlalchemy.Column(sqlalchemy.String(30))
     reimbursement_email = sqlalchemy.Column(sqlalchemy.String(255))
-    join_date = sqlalchemy.Column(sqlalchemy.DateTime)
-    birthday = sqlalchemy.Column(sqlalchemy.DateTime)
+    join_date = sqlalchemy.Column(sqlalchemy.Date)
+    birthday = sqlalchemy.Column(sqlalchemy.Date)
     memo = sqlalchemy.Column(sqlalchemy.JSON)
     type = sqlalchemy.Column(sqlalchemy.String(30))
     review_by_id = sqlalchemy.Column(sqlalchemy.String(100), sqlalchemy.ForeignKey("account.id"))
@@ -58,7 +58,7 @@ class Account(BASE):
     # )
 
     groups: typing.List["Group"] = sqlalchemy.orm.relationship(
-        "Group", secondary="user_group", back_populates="accounts"
+        "Group", secondary="accout_group", back_populates="accounts"
     )
 
     def __repr__(self):
@@ -68,7 +68,7 @@ class Account(BASE):
         )
 
 
-class Group(BASE):
+class Group(base):
     """group table model"""
 
     __tablename__ = "group"
@@ -81,17 +81,17 @@ class Group(BASE):
     memo = sqlalchemy.Column(sqlalchemy.JSON)
 
     accounts: typing.List["Account"] = sqlalchemy.orm.relationship(
-        "Account", secondary="user_group", back_populates="groups"
+        "Account", secondary="accout_group", back_populates="groups"
     )
 
     def __repr__(self):
         return f"Group<name: {self.english_name}, email: {self.email}, id: {self.id}>"
 
 
-class UserGroup(BASE):
+class AccountGroup(base):
     """user and group during many to many join table"""
 
-    __tablename__ = "user_group"
+    __tablename__ = "accout_group"
     user_id = sqlalchemy.Column(
         sqlalchemy.String(100), sqlalchemy.ForeignKey("account.id"), primary_key=True
     )

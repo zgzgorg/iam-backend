@@ -9,7 +9,7 @@ import zgiam.lib.log
 
 
 logger: logging.Logger = zgiam.lib.log.get_logger(__name__)
-_APP: typing.Union[flask.Flask, None] = None
+_app: typing.Union[flask.Flask, None] = None
 
 
 def get_app(name: typing.Union[str, None] = None) -> flask.Flask:
@@ -21,17 +21,17 @@ def get_app(name: typing.Union[str, None] = None) -> flask.Flask:
     Returns:
         Flask
     """
-    global _APP
-    if _APP is None:
+    global _app
+    if _app is None:
         name = name or __name__
-
-        _APP = flask.Flask(name)
         flask_config = zgiam.lib.config.get_config()["FLASK"]  # type: ignore
-        _APP.config.update(flask_config)
 
         # TODO: check encrypt
-        _APP.config["ENV"] = (
+        flask_config["ENV"] = (
             "production" if flask_config.getboolean("PRODUCTION") else "development"
         )
 
-    return _APP
+        _app = flask.Flask(name)
+        _app.config.update(flask_config)
+
+    return _app
