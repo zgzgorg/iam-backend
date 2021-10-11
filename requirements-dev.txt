@@ -26,7 +26,7 @@ distlib==0.3.2
     # via virtualenv
 filelock==3.0.12
     # via virtualenv
-flake8==3.9.2
+flake8==4.0.1
     # via -r requirements-dev.in
 greenlet==1.1.2
     # via sqlalchemy
@@ -82,11 +82,11 @@ pre-commit==2.15.0
     # via -r requirements-dev.in
 py==1.10.0
     # via pytest
-pycodestyle==2.7.0
+pycodestyle==2.8.0
     # via
     #   -r requirements-dev.in
     #   flake8
-pyflakes==2.3.1
+pyflakes==2.4.0
     # via flake8
 pylint==2.11.1
     # via -r requirements-dev.in
