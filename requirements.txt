@@ -6,20 +6,31 @@
 #
 alembic==1.6.5
     # via -r requirements.in
+aniso8601==9.0.1
+    # via flask-restx
+attrs==21.2.0
+    # via jsonschema
 click==8.0.1
     # via flask
 flask==2.0.2
     # via
     #   -r requirements.in
+    #   flask-restx
     #   flask-sqlalchemy
+flask-restx==0.5.1
+    # via -r requirements.in
 flask-sqlalchemy==2.5.1
     # via -r requirements.in
 greenlet==1.1.2
     # via sqlalchemy
+gunicorn==20.1.0
+    # via -r requirements.in
 itsdangerous==2.0.1
     # via flask
 jinja2==3.0.1
     # via flask
+jsonschema==4.0.1
+    # via flask-restx
 mako==1.1.5
     # via alembic
 markupsafe==2.0.1
@@ -30,16 +41,27 @@ psycopg2-binary==2.9.1
     # via -r requirements.in
 pymysql==1.0.2
     # via -r requirements.in
+pyrsistent==0.18.0
+    # via jsonschema
 python-dateutil==2.8.2
     # via alembic
 python-editor==1.0.4
     # via alembic
+pytz==2021.3
+    # via flask-restx
 six==1.16.0
-    # via python-dateutil
+    # via
+    #   flask-restx
+    #   python-dateutil
 sqlalchemy==1.4.25
     # via
     #   -r requirements.in
     #   alembic
     #   flask-sqlalchemy
 werkzeug==2.0.1
-    # via flask
+    # via
+    #   flask
+    #   flask-restx
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools

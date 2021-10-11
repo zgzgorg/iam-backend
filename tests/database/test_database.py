@@ -1,9 +1,9 @@
 """testing for zgiam.database module"""
 # pylint: disable=C0116,W0621,W0212,W0611
 import pytest
-from mock_database import db  # noqa: F401
-from mock_config import config  # noqa: F401
-from mock_app import app  # noqa: F401
+from tests.mocks.mock_database import db  # noqa: F401
+from tests.mocks.mock_config import config  # noqa: F401
+from tests.mocks.mock_app import app  # noqa: F401
 import zgiam.models
 import zgiam.core
 import zgiam.lib.config
@@ -15,7 +15,7 @@ def test_get_db():
 
 
 def test_table_create(db):
-    zgiam.models.BASE.metadata.create_all(db.engine)
+    zgiam.models.base.metadata.create_all(db.engine)
 
 
 def test_database_sqlite_config(app, config):
