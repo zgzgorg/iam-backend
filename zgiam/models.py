@@ -48,7 +48,7 @@ class Account(base):
     review_status = sqlalchemy.Column(sqlalchemy.String(30))
     has_iam_google_account = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
 
-    reviewed_users: "Account" = sqlalchemy.orm.relationship(
+    reviewed_accounts: "Account" = sqlalchemy.orm.relationship(
         "Account", backref=sqlalchemy.orm.backref("review_by_user", remote_side=id)
     )
     # as always, we can do below too:
@@ -89,10 +89,10 @@ class Group(base):
 
 
 class AccountGroup(base):
-    """user and group during many to many join table"""
+    """account and group during many to many join table"""
 
     __tablename__ = "accout_group"
-    user_id = sqlalchemy.Column(
+    account_id = sqlalchemy.Column(
         sqlalchemy.String(100), sqlalchemy.ForeignKey("account.id"), primary_key=True
     )
     group_id = sqlalchemy.Column(

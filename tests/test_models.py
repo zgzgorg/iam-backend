@@ -7,7 +7,7 @@ from tests.mocks.mock_database import db  # noqa: F401
 import zgiam.models
 
 
-def test_user_create(db):
+def test_account_create(db):
     account = zgiam.models.Account(
         email="william@iam.test", first_name="william", last_name="chen", id="will"
     )
@@ -21,7 +21,7 @@ def test_user_create(db):
     )
 
 
-def test_user_create_no_id(db):
+def test_account_create_no_id(db):
     account = zgiam.models.Account(
         email="william2@iam.test", first_name="william", last_name="chen"
     )
@@ -33,7 +33,7 @@ def test_user_create_no_id(db):
     assert readback_account.id == account.id
 
 
-def test_duplicate_user_create(db):
+def test_duplicate_account_create(db):
     account = zgiam.models.Account(
         email="william@iam.test", first_name="william", last_name="chen", id="will"
     )
@@ -48,14 +48,14 @@ def test_duplicate_user_create(db):
     db.session.rollback()
 
 
-def test_create_user_miss_email(db):
+def test_create_account_miss_email(db):
     account = zgiam.models.Account(first_name="william", last_name="chen", id="willchen")
     with pytest.raises(sqlalchemy.exc.IntegrityError):
         db.session.add(account)
         db.session.commit()
 
 
-def test_user_review_by(db):
+def test_account_review_by(db):
     review_account = zgiam.models.Account(
         email="william@iam.test", first_name="william", last_name="chen", id="will"
     )
@@ -67,7 +67,7 @@ def test_user_review_by(db):
     db.session.add(account)
     db.session.commit()
     readback_account = db.session.query(zgiam.models.Account).filter_by(id="will").one()
-    assert readback_account.reviewed_users[0].id == account.id
+    assert readback_account.reviewed_accounts[0].id == account.id
 
 
 def test_group_create(db):
