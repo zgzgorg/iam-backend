@@ -98,21 +98,18 @@ pytest==6.2.5
     #   pytest-cov
 pytest-cov==3.0.0
     # via -r requirements-dev.in
-pytype==2021.10.4
+pytype==2021.10.11
     # via -r requirements-dev.in
 pyyaml==5.4.1
     # via
     #   libcst
     #   pre-commit
-    #   pytype
 regex==2021.8.28
     # via black
 shellcheck-py==0.7.2.1
     # via -r requirements-dev.in
 six==1.16.0
-    # via
-    #   pytype
-    #   virtualenv
+    # via virtualenv
 sqlalchemy[mypy]==1.4.25
     # via -r requirements-dev.in
 sqlalchemy2-stubs==0.0.2a17
