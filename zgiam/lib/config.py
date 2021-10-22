@@ -42,7 +42,11 @@ def _load_local_config() -> None:
     read_in_config.optionxform = str
     env_config_path = os.environ.get(f"{_ENV_PREFIX}_CONFIG_PATH", "/etc/zgiam/zgiam.cfg")
     read_in_config.read(env_config_path)
-    _config.update(read_in_config)
+    for section in _config.sections():
+        for option in _config.options(section):
+            config_value = _config.get(section, option)
+            read_in_config_value = read_in_config.get(section, option, fallback=config_value)
+            _config.set(section, option, read_in_config_value)
 
 
 @typing.no_type_check
@@ -74,11 +78,37 @@ def _load_config() -> None:
     ):
         _config.set("FLASK", "DEBUG", "TRUE")
         _config.set("CORE", "DEBUG", "TRUE")
+        root_package_name = __name__.split(".", maxsplit=1)[0]
+        logging.getLogger(root_package_name).setLevel(logging.DEBUG)
+        logging.getLogger().setLevel(logging.DEBUG)
+
+        loggers = [
+            logging.getLogger(name)
+            for name in logging.root.manager.loggerDict  # pylint: disable=no-member
+            if root_package_name in name
+        ]
+
+        for logger_ in loggers:
+            logger_.setLevel(logging.DEBUG)
+
+        # Dislike this, but accroding to oauthlib docs only accept environment variables
+        # http://oauthlib.readthedocs.org/en/latest/oauth2/security.html
+        os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "True"
+        os.environ["OAUTHLIB_RELAX_TOKEN_SCOPE"] = "True"
+        logger.debug("DEBUG flag set, in debug mode")
+
+    # update sqlalchemy logging debug flag
+    if _config.getboolean("DATABASE", "SQLALCHEMY_DEBUG", fallback=False):
+        # FIXME: I don't know how to only set sqlalchemy to debug
+        #        because the sqlalchemy will folk the root logger
         logging.getLogger().setLevel(logging.DEBUG)
         loggers = [
             logging.getLogger(name)
-            for name in logging.root.manager.loggerDict  # pylint: disable=E1101
+            for name in logging.root.manager.loggerDict  # pylint: disable=no-member
+            if "sqlalchemy" in name
         ]
+
         for logger_ in loggers:
             logger_.setLevel(logging.DEBUG)
-        logger.debug("DEBUG flag set, in debug mode")
+
+        logger.debug("SQLALCHEMY_DEBUG flag set, sqlalchemy will output debug logging")

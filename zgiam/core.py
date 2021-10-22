@@ -33,5 +33,19 @@ def get_app(name: typing.Union[str, None] = None) -> flask.Flask:
 
         _app = flask.Flask(name)
         _app.config.update(flask_config)
-
+        _convert_flask_config_type(_app.config)
     return _app
+
+
+def _convert_flask_config_type(config):
+    for key, value in config.items():
+        if isinstance(value, str):
+            try:
+                config[key] = int(value)
+                continue
+            except ValueError:
+                value = value.lower()
+                if value in ["true", "false"]:
+                    config[key] = value == "true"
+                elif value == "none":
+                    config[key] = None

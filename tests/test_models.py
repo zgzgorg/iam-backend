@@ -2,12 +2,11 @@
 # pylint: disable=C0116,W0621,W0212,W0611
 import pytest
 import sqlalchemy.exc
-
-from tests.mocks.mock_database import db  # noqa: F401
 import zgiam.models
 
 
 def test_account_create(db):
+    print(db)
     account = zgiam.models.Account(
         email="william@iam.test", first_name="william", last_name="chen", id="will"
     )
@@ -34,6 +33,7 @@ def test_account_create_no_id(db):
 
 
 def test_duplicate_account_create(db):
+    print(db)
     account = zgiam.models.Account(
         email="william@iam.test", first_name="william", last_name="chen", id="will"
     )
@@ -49,7 +49,7 @@ def test_duplicate_account_create(db):
 
 
 def test_create_account_miss_email(db):
-    account = zgiam.models.Account(first_name="william", last_name="chen", id="willchen")
+    account = zgiam.models.Account(first_name="william", last_name="chen", id="will")
     with pytest.raises(sqlalchemy.exc.IntegrityError):
         db.session.add(account)
         db.session.commit()
@@ -95,3 +95,38 @@ def test_account_group_create(db):
     assert readback_group.accounts[0].id == readback_account.id
     readback_account_group = db.session.query(zgiam.models.AccountGroup).all()
     assert len(readback_account_group) == 1
+
+
+def test_oauth_create(db):
+    account = zgiam.models.Account(
+        email="william@iam.test", first_name="william", last_name="chen", id="will"
+    )
+    oauth = zgiam.models.OAuth(
+        provider="orgiam",
+        provider_user_id="test_provider_user_id",
+        account_id="will",
+        token={"token": "..."},
+    )
+    oauth.account = account
+    db.session.add_all([account, oauth])
+    db.session.commit()
+    readback_oauth = db.session.query(zgiam.models.OAuth).filter_by(account_id="will").one()
+    assert repr(readback_oauth) == "OAuth<account_id:will, provider:orgiam>"
+    # check the flask-login and flask-account need
+    assert readback_oauth.user_id == "will"
+    assert readback_oauth.account == account
+    assert readback_oauth.user == account
+
+
+def test_account_token_create(db):
+    account = zgiam.models.Account(
+        email="william@iam.test", first_name="william", last_name="chen", id="will"
+    )
+    db.session.add(account)
+    account_token = zgiam.models.AccountToken(account_id="will", token="...")
+    db.session.add(account_token)
+    db.session.commit()
+    readback_account_token = (
+        db.session.query(zgiam.models.AccountToken).filter_by(account_id="will").one()
+    )
+    assert repr(readback_account_token) == "AccountToken<account_id:will, partial token:...>"

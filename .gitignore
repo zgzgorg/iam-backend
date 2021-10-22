@@ -583,7 +583,7 @@ pip-selfcheck.json
 
 # -------------- ZGIAM
 zgiam.sql
-iam.cfg
+iam*.cfg
 # temporary
 docs/API_files/*
 docs/API.html
