@@ -8,3 +8,7 @@ PyMySQL
 SQLAlchemy
 gunicorn
 flask-restx
+Flask-Dance[sqla]
+flask-login
+blinker
+flask-jwt-extended

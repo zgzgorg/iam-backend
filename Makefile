@@ -208,8 +208,6 @@ develop:
 	pip3 install -r $(GITDIR)/requirements.txt
 	pip3 install -r $(GITDIR)/requirements-dev.txt
 	$(MAKE) install-githook
-	pip3 install -r requirements.txt
-	pip3 install -r requirements-dev.txt
 	python3 setup.py --verbose develop
 
 

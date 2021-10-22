@@ -57,7 +57,7 @@ class RegisterAccount(flask_restx.Resource):
         },
     )  # pylint: disable=no-self-use
     @_account_api_v1.expect(_account, validate=True)
-    def post(self):
+    def post(self) -> None:
         """register user and insert data to database"""
         zgiam.api.lib.validate_payload(_account_api_v1.payload, _account)
 
@@ -75,8 +75,8 @@ class RegisterAccount(flask_restx.Resource):
         account = zgiam.models.Account(**account_kwargs)
         db = zgiam.database.get_db()
         try:
-            db.session.add(account)  # pylint: disable=no-member
-            db.session.commit()  # pylint: disable=no-member
+            db.session.add(account)
+            db.session.commit()
         except sqlalchemy.exc.IntegrityError as e:
             logger.error("database commit error: %s", e)
             flask_restx.abort(http.HTTPStatus.CONFLICT)

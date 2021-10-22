@@ -3,6 +3,7 @@ import sys
 import zgiam.core
 import zgiam.api
 import zgiam.database
+import zgiam.auth
 
 
 def main():
@@ -10,6 +11,7 @@ def main():
     app = zgiam.core.get_app()
     zgiam.database.get_db()
     zgiam.api.register_blueprint()
+    zgiam.auth.config_auth_apps()
     app.run()
 
 
