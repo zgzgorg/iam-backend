@@ -39,7 +39,7 @@ class Login(flask_restx.Resource):
             int(http.HTTPStatus.OK): "login successful",
         },
     )  # pylint: disable=no-self-use
-    def post(self) -> werkzeug.wrappers.response.Response:
+    def get(self) -> werkzeug.wrappers.response.Response:
         """login via google OAuth2"""
         # This is being handle by flask-dance
         return flask.redirect(flask.url_for("google.login"))
@@ -103,6 +103,7 @@ class Token(flask_restx.Resource):
     @flask_restx.marshal_with(_token)
     def post(self) -> tuple:
         """Create account token"""
+
         account = flask_login.current_user
         token = flask_jwt_extended.create_access_token(account.id)
         db = zgiam.database.get_db()
@@ -124,15 +125,15 @@ class Token(flask_restx.Resource):
         """delete account token"""
         zgiam.api.lib.validate_payload(_auth_api_v1.payload, _token)
         token = _auth_api_v1.payload["token"]
-        db = zgiam.database.get_db()
-        account = flask_login.current_user
+
         try:
-            account_token = (
-                db.session.query(zgiam.models.AccountToken)
-                .filter_by(account_id=account.id, token=token, expire_time=None)
-                .one()
-            )
+            with zgiam.database.get_session() as session:
+                account = flask_login.current_user
+                account_token = (
+                    session.query(zgiam.models.AccountToken)
+                    .filter_by(account_id=account.id, token=token, expire_time=None)
+                    .one()
+                )
+                account_token.expire_time = datetime.datetime.now()
         except sqlalchemy.exc.NoResultFound:
             flask_restx.abort(http.HTTPStatus.BAD_REQUEST)
-        account_token.expire_time = datetime.datetime.now()
-        db.session.commit()

@@ -58,3 +58,8 @@ def test_database_wrong_config(app, config):
     config.set("DATABASE", "DBNAME", "zgiam")
     with pytest.raises(TypeError):
         zgiam.database._config_db(app)
+
+
+def test_close_session(app):  # pylint: disable=unused-argument
+    with zgiam.database.get_session(close=True):
+        ...
