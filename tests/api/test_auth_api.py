@@ -8,7 +8,7 @@ import zgiam.database
 
 
 def test_login_oauth_redirect(client):
-    response = client.post("/api/v1/auth/login", data=json.dumps({}))
+    response = client.get("/api/v1/auth/login")
     assert response.status_code == 302
 
 
@@ -58,7 +58,6 @@ def test_delete_good_token(app):
             data=json.dumps({"token": "..."}),
             headers={"token": "...", "Content-Type": "application/json"},
         )
-        print(response.data)
         assert response.status_code == 200
 
 

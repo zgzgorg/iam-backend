@@ -1,6 +1,8 @@
 """Database connector"""
 import typing
+import contextlib
 
+import sqlalchemy.orm
 import flask_sqlalchemy
 import flask
 
@@ -50,3 +52,33 @@ def get_db() -> flask_sqlalchemy.SQLAlchemy:
         _config_db(app)
         _db = flask_sqlalchemy.SQLAlchemy(app)
     return _db
+
+
+@contextlib.contextmanager
+def get_session(
+    session: sqlalchemy.orm.scoped_session = None, *, close: bool = False
+) -> typing.Generator:
+    """session auto rollback
+
+    Args:
+        session (sqlalchemy.orm.scoped_session, optional): sqlalchemy session.
+            Defaults to flask_sqlalchemy.SQLAlchemy.Session
+        close (bool, optional): close session after use. Defaults to False.
+
+    Returns:
+        typing.Generator: SQLAlchemy session
+
+    Yields:
+        Iterator[typing.Generator]: SQLAlchemy session
+    """
+    if not session:
+        session = get_db().session
+    try:
+        yield session
+        session.commit()  # type: ignore
+    except:  # noqa: E722
+        session.rollback()  # type: ignore
+        raise
+    finally:
+        if close:
+            session.close()  # type: ignore

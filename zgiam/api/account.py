@@ -2,9 +2,10 @@
 import logging
 import datetime
 import http
+
 import sqlalchemy.exc
 import flask_restx
-
+import flask_login
 
 import zgiam.api.lib
 import zgiam.lib.log
@@ -44,6 +45,18 @@ _account: flask_restx.Model = _account_api_v1.model(
     },
 )
 
+_approved_account: flask_restx.Model = _account_api_v1.clone(
+    "approved_account",
+    _account,
+    {
+        "first_name": flask_restx.fields.String(example="Jack"),
+        "last_name": flask_restx.fields.String(example="Wong"),
+        "phone_number": flask_restx.fields.String(example="1234567890"),
+        "id": flask_restx.fields.String(example="JackW"),
+        "email": zgiam.api.lib.Email(),
+    },
+)
+
 
 @_account_api_v1.route("/register")
 class RegisterAccount(flask_restx.Resource):
@@ -73,10 +86,64 @@ class RegisterAccount(flask_restx.Resource):
             ...
 
         account = zgiam.models.Account(**account_kwargs)
-        db = zgiam.database.get_db()
+
         try:
-            db.session.add(account)
-            db.session.commit()
+            with zgiam.database.get_session() as session:
+                session.add(account)
         except sqlalchemy.exc.IntegrityError as e:
             logger.error("database commit error: %s", e)
             flask_restx.abort(http.HTTPStatus.CONFLICT)
+
+
+@_account_api_v1.route("/info")
+class Info(flask_restx.Resource):
+    """Account Operation"""
+
+    @_account_api_v1.doc(
+        description="Get account infomation",
+        responses={int(http.HTTPStatus.OK): "get information successful"},
+    )  # pylint: disable=no-self-use
+    @flask_restx.marshal_with(_approved_account)
+    @flask_login.login_required
+    def get(self) -> zgiam.models.Account:
+        """get account infomation from database"""
+        return flask_login.current_user
+
+    @_account_api_v1.doc(
+        description="Update account infomation except `join_date`, `type` and `id`",
+        responses={
+            int(http.HTTPStatus.OK): "update information successful",
+            int(http.HTTPStatus.UNAUTHORIZED): "unauthorized",
+            int(http.HTTPStatus.CONFLICT): "email conflict",
+        },
+    )  # pylint: disable=no-self-use
+    @flask_restx.marshal_with(_approved_account)
+    @_account_api_v1.expect(_approved_account, validate=True)
+    @flask_login.login_required
+    def patch(self) -> None:
+        """update account infomation"""
+        zgiam.api.lib.validate_payload(_account_api_v1.payload, _approved_account)
+
+        avoid_update_field = ["join_date", "type", "id"]
+        account_kwargs = {
+            key: value
+            for key, value in _account_api_v1.payload.items()
+            if key not in avoid_update_field
+        }
+
+        try:
+            account_kwargs["birthday"] = datetime.date.fromisoformat(account_kwargs["birthday"])
+        except KeyError:
+            ...
+        except ValueError:
+            flask_restx.abort(http.HTTPStatus.BAD_REQUEST, "wrong birthday format")
+
+        try:
+            with zgiam.database.get_session():
+                account = flask_login.current_user
+                for key, value in account_kwargs.items():
+                    setattr(account, key, value)
+        except sqlalchemy.exc.IntegrityError:
+            flask_restx.abort(http.HTTPStatus.CONFLICT)
+
+        return account
