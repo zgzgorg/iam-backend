@@ -98,7 +98,7 @@ pytest==6.2.5
     #   pytest-cov
 pytest-cov==3.0.0
     # via -r requirements-dev.in
-pytype==2021.10.11
+pytype==2021.10.18
     # via -r requirements-dev.in
 pyyaml==5.4.1
     # via
