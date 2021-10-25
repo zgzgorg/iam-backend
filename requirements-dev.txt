@@ -110,7 +110,7 @@ shellcheck-py==0.7.2.1
     # via -r requirements-dev.in
 six==1.16.0
     # via virtualenv
-sqlalchemy[mypy]==1.4.25
+sqlalchemy[mypy]==1.4.26
     # via -r requirements-dev.in
 sqlalchemy2-stubs==0.0.2a17
     # via sqlalchemy

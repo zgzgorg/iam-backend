@@ -76,7 +76,7 @@ requests-oauthlib==1.3.0
     # via flask-dance
 six==1.16.0
     # via flask-restx
-sqlalchemy==1.4.25
+sqlalchemy==1.4.26
     # via
     #   -r requirements.in
     #   alembic
