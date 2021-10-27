@@ -14,7 +14,7 @@ _db: typing.Union[flask_sqlalchemy.SQLAlchemy, None] = None
 
 
 def _config_db(app: flask.Flask) -> None:
-    config = zgiam.lib.config.get_config()["DATABASE"]  # type: ignore
+    config = zgiam.lib.config.get_config()["DATABASE"]
     # TODO: better mapping
     type_ = config.get("TYPE").lower()
     url = None

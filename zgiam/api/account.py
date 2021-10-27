@@ -6,12 +6,15 @@ import http
 import sqlalchemy.exc
 import flask_restx
 import flask_login
+import googleapiclient.errors
 
+import zgiam.api
 import zgiam.api.lib
 import zgiam.lib.log
+import zgiam.lib.google
 import zgiam.database
 import zgiam.models
-import zgiam.api
+import zgiam.jobs
 
 
 logger: logging.Logger = zgiam.lib.log.get_logger(__name__)
@@ -27,7 +30,7 @@ _account: flask_restx.Model = _account_api_v1.model(
         "last_name": flask_restx.fields.String(example="Wong", required=True),
         "chinese_name": flask_restx.fields.String(example="王傑克"),
         "nickname": flask_restx.fields.String(example="JJ"),
-        "phone_number": flask_restx.fields.String(example="1234567890", required=True),
+        "phone_number": zgiam.api.lib.PhoneNumber(example="+10001112222;3,44", required=True),
         "shirt_size": flask_restx.fields.String(example="XXL"),
         "company": flask_restx.fields.String(example="Space X"),
         "school": flask_restx.fields.String(example="Moon College"),
@@ -51,10 +54,15 @@ _approved_account: flask_restx.Model = _account_api_v1.clone(
     {
         "first_name": flask_restx.fields.String(example="Jack"),
         "last_name": flask_restx.fields.String(example="Wong"),
-        "phone_number": flask_restx.fields.String(example="1234567890"),
+        "phone_number": zgiam.api.lib.PhoneNumber(example="+10001112222;3,44"),
         "id": flask_restx.fields.String(example="JackW"),
         "email": zgiam.api.lib.Email(),
     },
+)
+
+_approving_accounts: flask_restx.Model = _account_api_v1.model(
+    "approving_accounts",
+    {"emails": flask_restx.fields.List(flask_restx.fields.String, required=True)},
 )
 
 
@@ -75,6 +83,13 @@ class RegisterAccount(flask_restx.Resource):
         zgiam.api.lib.validate_payload(_account_api_v1.payload, _account)
 
         account_kwargs = _account_api_v1.payload.copy()
+
+        for name in ["first_name", "last_name"]:
+            # set format to "Apple Banana"
+            account_kwargs[name] = (
+                account_kwargs[name][0].upper() + account_kwargs[name][1:].lower()
+            )
+
         try:
             account_kwargs["join_date"] = datetime.date.fromisoformat(account_kwargs["join_date"])
         except KeyError:
@@ -147,3 +162,46 @@ class Info(flask_restx.Resource):
             flask_restx.abort(http.HTTPStatus.CONFLICT)
 
         return account
+
+
+@_account_api_v1.route("/approve_registers")
+class ApproveRegisters(flask_restx.Resource):
+    """Account Operation"""
+
+    @_account_api_v1.doc(
+        description="approve accounts",
+        responses={
+            int(http.HTTPStatus.OK): "approve accounts successful",
+            int(http.HTTPStatus.BAD_REQUEST): "approve accounts have some fails",
+        },
+    )  # pylint: disable=no-self-use
+    @_account_api_v1.expect(_approving_accounts, validate=True)
+    @flask_login.login_required
+    def post(self) -> list:
+        """get account infomation from database"""
+        zgiam.api.lib.validate_payload(_account_api_v1.payload, _approving_accounts)
+        emails = _account_api_v1.payload["emails"]
+        results = []
+        has_error = False
+        for email in emails:
+            message = ""
+
+            try:
+                with zgiam.database.get_session() as session:
+                    account = session.query(zgiam.models.Account).filter_by(email=email).one()
+                    account.generate_id()
+                    account.review_by_id = flask_login.current_user.id
+                    account.review_status = "APPROVED"
+                    zgiam.jobs.create_google_workspace_account(account)
+                    # TODO: send welcome email here
+                    message = f"SUCCESS: id: {account.id}"
+            except sqlalchemy.exc.NoResultFound:
+                has_error = True
+                message = "ERROR: account not found in database"
+            except googleapiclient.errors.HttpError as e:
+                has_error = True
+                message = f"ERROR: Google Workspace with error({e.error_details})"
+            results.append({"email": email, "message": message})
+        if has_error:
+            flask_restx.abort(http.HTTPStatus.BAD_REQUEST, results)
+        return results

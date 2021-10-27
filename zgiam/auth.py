@@ -42,9 +42,7 @@ def login_oauth_token_check(func: typing.Callable) -> typing.Any:
             return func(*args, **kwargs)
 
         config = zgiam.lib.config.get_config()
-        google_oauth_token_expire_time = config.getint(  # type: ignore
-            "CORE", "GOOGLE_OAUTH_TOKEN_EXPIRE_TIME"
-        )
+        google_oauth_token_expire_time = config.getint("CORE", "GOOGLE_OAUTH_TOKEN_EXPIRE_TIME")
 
         db = zgiam.database.get_db()
         query = db.session.query(zgiam.models.OAuth).filter_by(
@@ -75,7 +73,7 @@ def config_auth_apps() -> None:
     login_manager.user_loader(_flask_login_user_loader)
     login_manager.request_loader(_flask_login_request_loader)
 
-    domains = json.loads(config.get("CORE", "DOMAINS"))  # type: ignore
+    domains = json.loads(config.get("CORE", "DOMAINS"))
     # set google hosted_domain
     primary_domain = domains[0]
 
@@ -85,7 +83,7 @@ def config_auth_apps() -> None:
             zgiam.models.OAuth, zgiam.database.get_db().session, user=flask_login.current_user
         ),
         hosted_domain=primary_domain,
-        redirect_url=config.get("CORE", "GOOGLE_OAUTH_REDIRECT_URL"),  # type: ignore
+        redirect_url=config.get("CORE", "GOOGLE_OAUTH_REDIRECT_URL"),
     )
 
     flask_dance.consumer.oauth_authorized.connect_via(google_blueprint)(_google_logged_in)
@@ -184,7 +182,7 @@ def verify_email_domains(email: str) -> bool:
         bool: True is email in the domains. Otherwise False
     """
     config = zgiam.lib.config.get_config()
-    domains = json.loads(config.get("CORE", "DOMAINS"))  # type: ignore
+    domains = json.loads(config.get("CORE", "DOMAINS"))
     for domain in domains:
         if email.endswith(domain):
             return True

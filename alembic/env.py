@@ -39,14 +39,19 @@ def run_migrations_offline():
     script output.
 
     """
-    zgiam.database.get_db() # Load SQLALCHEMY_DATABASE_URI to config
+    zgiam.database.get_db()  # Load SQLALCHEMY_DATABASE_URI to config
     url = zgiam.core.get_app().config["SQLALCHEMY_DATABASE_URI"]
+
+    # add `render_as_batch` due to
+    # https://alembic.sqlalchemy.org/en/latest/batch.html#batch-mode-with-autogenerate
+    # and https://stackoverflow.com/q/30378233/9604912
 
     context.configure(
         url=url,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        render_as_batch=True,
     )
 
     with context.begin_transaction():
@@ -63,8 +68,11 @@ def run_migrations_online():
     connectable = zgiam.database.get_db().get_engine()
 
     with connectable.connect() as connection:
+        # add `render_as_batch` due to
+        # https://alembic.sqlalchemy.org/en/latest/batch.html#batch-mode-with-autogenerate
+        # and https://stackoverflow.com/q/30378233/9604912
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection, target_metadata=target_metadata, render_as_batch=True
         )
 
         with context.begin_transaction():

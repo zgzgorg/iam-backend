@@ -24,7 +24,7 @@ def get_app(name: typing.Union[str, None] = None) -> flask.Flask:
     global _app
     if _app is None:
         name = name or __name__
-        flask_config = zgiam.lib.config.get_config()["FLASK"]  # type: ignore
+        flask_config = zgiam.lib.config.get_config()["FLASK"]
 
         # TODO: check encrypt
         flask_config["ENV"] = (

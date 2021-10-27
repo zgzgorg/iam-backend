@@ -31,7 +31,9 @@ class Account(flask_login.UserMixin, base):
     id = sqlalchemy.Column(sqlalchemy.String(100), unique=True)
     chinese_name = sqlalchemy.Column(sqlalchemy.String(255))
     nickname = sqlalchemy.Column(sqlalchemy.String(255))
-    phone_number = sqlalchemy.Column(sqlalchemy.String(30))
+    phone_number = sqlalchemy.Column(sqlalchemy.String(30), nullable=False)
+    wechat_id = sqlalchemy.Column(sqlalchemy.String(30))
+    line_id = sqlalchemy.Column(sqlalchemy.String(30))
     shirt_size = sqlalchemy.Column(sqlalchemy.String(10))
     company = sqlalchemy.Column(sqlalchemy.String(50))
     school = sqlalchemy.Column(sqlalchemy.String(50))
@@ -71,6 +73,31 @@ class Account(flask_login.UserMixin, base):
             f"Account<name: {self.first_name} {self.last_name}, "
             f"email: {self.email}, id: {self.id}>"
         )
+
+    def generate_id(self) -> str:
+        """General ORG id for account
+        The idea is first_name + last_name initial + duplicate number(if it is 0 will not be used)
+
+        Returns:
+            str: a general id
+        """
+        if self.id:
+            return self.id
+
+        with zgiam.database.get_session() as session:
+            pure_firstname = self.first_name.replace(" ", "").lower()  # type: ignore
+            lastname_initial = self.last_name.replace(" ", "").lower()[0]  # type: ignore
+
+            temp_id = f"{pure_firstname}{lastname_initial}"
+            query = (
+                session.query(Account)
+                .filter(Account.id.like(f"%{temp_id}%"))
+                .statement.with_only_columns([sqlalchemy.sql.func.count()])
+                .order_by(None)
+            )
+            count = session.execute(query).scalar()
+            self.id = temp_id if not count else f"{temp_id}{count}"
+        return self.id
 
 
 class Group(base):
@@ -139,7 +166,7 @@ class OAuth(flask_dance.consumer.storage.sqla.OAuthConsumerMixin, base):
         self.user = account_
 
     def __repr__(self):
-        return f"OAuth<account_id:{self.account_id}, provider:{self.provider}>"
+        return f"OAuth<account_id: {self.account_id}, provider: {self.provider}>"
 
 
 class AccountToken(base):
@@ -155,4 +182,4 @@ class AccountToken(base):
     account: Account = sqlalchemy.orm.relationship("Account", back_populates="tokens")
 
     def __repr__(self):
-        return f"AccountToken<account_id:{self.account_id}, partial token:{self.token[-10:]}>"
+        return f"AccountToken<account_id: {self.account_id}, partial token: {self.token[-10:]}>"
