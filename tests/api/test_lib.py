@@ -43,6 +43,24 @@ def test_email_validate_fail_with_wrong_format():
     assert field.validate("abc@google") is False
 
 
+def test_phonenumber_validate_pass():
+    field = zgiam.api.lib.PhoneNumber()
+    field.required = True
+    field.validate("+10000000000;1,3333")
+
+
+def test_phonenumber_validate_fail_for_required():
+    field = zgiam.api.lib.PhoneNumber()
+    field.required = True
+    assert field.validate(None) is False
+
+
+def test_phonenumber_validate_fail_with_wrong_format():
+    field = zgiam.api.lib.PhoneNumber()
+    field.required = True
+    assert field.validate("+1800orgiam") is False
+
+
 def test_validate_payload_pass(test_model):
     zgiam.api.lib.validate_payload(
         {"email": "abc@gmail.com", "name": "abc", "data": ["1", "2", "3"]}, test_model

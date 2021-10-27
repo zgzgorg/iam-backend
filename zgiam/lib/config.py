@@ -2,6 +2,7 @@
 import typing
 import os
 import configparser
+import json
 import logging
 import logging.config
 
@@ -14,7 +15,7 @@ _config: typing.Union[configparser.ConfigParser, None] = None
 _ENV_PREFIX: str = "IAM"
 
 
-def get_config(reload: bool = False) -> typing.Optional[configparser.ConfigParser]:
+def get_config(reload: bool = False) -> configparser.ConfigParser:
     """get config
 
     Args:
@@ -25,6 +26,10 @@ def get_config(reload: bool = False) -> typing.Optional[configparser.ConfigParse
     """
     if not _config or reload:
         _load_config()
+
+    # even that is very unlikely to to get `_config` is None, but linter will complain
+    if _config is None:
+        raise RuntimeError("Load config file fail")
     return _config
 
 
@@ -112,3 +117,8 @@ def _load_config() -> None:
             logger_.setLevel(logging.DEBUG)
 
         logger.debug("SQLALCHEMY_DEBUG flag set, sqlalchemy will output debug logging")
+
+    # set primary_domain
+    domains = json.loads(_config.get("CORE", "DOMAINS"))  # type: ignore
+    # set google hosted_domain
+    _config.set("CORE", "PRIMARY_DOMAIN", domains[0])

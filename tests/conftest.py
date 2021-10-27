@@ -56,3 +56,42 @@ def db() -> flask_sqlalchemy.SQLAlchemy:
     _db = setup_testing_db()
     yield _db
     _db.session.close()
+
+
+@pytest.fixture
+def unittest_data():
+    return type(
+        "TestData",
+        (),
+        {
+            "account1": zgiam.models.Account(
+                email="accounto@iam.test",
+                first_name="account",
+                last_name="one",
+                id="accounto",
+                phone_number="+10001112222;1,1234",
+            ),
+            "account2": zgiam.models.Account(
+                email="accountt@iam.test",
+                first_name="account",
+                last_name="two",
+                id="accountt",
+                phone_number="+12223334444",
+            ),
+            "account3": zgiam.models.Account(
+                email="accountt@iam.test",
+                first_name="account",
+                last_name="one",  # this is intentional
+                id="accounto1",
+                phone_number="+829438290123",
+            ),
+            "group1": zgiam.models.Group(email="group1@team.com"),
+            "oauth1": zgiam.models.OAuth(
+                provider="orgiam",
+                provider_user_id="test_provider_user_id",
+                account_id="accounto",
+                token={"token": "..."},
+            ),
+            "account_token1": zgiam.models.AccountToken(account_id="accounto", token="..."),
+        },
+    )

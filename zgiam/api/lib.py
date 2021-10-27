@@ -16,7 +16,7 @@ class CustomField(flask_restx.fields.Raw):
         Args:
             value (typing.Any): Any value
         """
-        type(value)
+        return type(value)
 
 
 class Email(CustomField):
@@ -29,12 +29,26 @@ class Email(CustomField):
     __schema_example__ = "email@domain.com"
 
     def validate(self, value):
-        EMAIL_REGEX = re.compile(r"\S+@\S+\.\S+")
+        email_regex = re.compile(r"\S+@\S+\.\S+")
         if not value:
-            return not bool(self.required)
-        if not EMAIL_REGEX.match(value):
-            return False
-        return True
+            return not self.required
+        return bool(email_regex.match(value))
+
+
+class PhoneNumber(CustomField):
+    """
+    Phone field
+    """
+
+    __schema_type__ = "string"
+    __schema_format__ = "phone"
+    __schema_example__ = "+10000000000;1,1111"
+
+    def validate(self, value):
+        phone_regex = re.compile(r"^[\d+;,]+$")
+        if not value:
+            return not self.required
+        return bool(phone_regex.match(value))
 
 
 def validate_payload(payload: typing.Any, api_model: flask_restx.Model):

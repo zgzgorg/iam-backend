@@ -27,14 +27,12 @@ def test_logout_revoke_oauth_fail(google_mock, app, client):
     assert response.status_code == 200
 
 
-def test_create_token(app):
+def test_create_token(app, unittest_data):
     app.config.pop("LOGIN_DISABLED")
     db = zgiam.database.get_db()
-    account = zgiam.models.Account(
-        email="william@iam.test", first_name="william", last_name="chen", id="will"
-    )
+    account = unittest_data.account1
     db.session.add(account)
-    account_token = zgiam.models.AccountToken(account_id="will", token="...")
+    account_token = unittest_data.account_token1
     db.session.add(account_token)
     db.session.commit()
     with app.test_client() as client:
@@ -42,14 +40,12 @@ def test_create_token(app):
         assert response.status_code == 201
 
 
-def test_delete_good_token(app):
+def test_delete_good_token(app, unittest_data):
     app.config.pop("LOGIN_DISABLED")
     db = zgiam.database.get_db()
-    account = zgiam.models.Account(
-        email="william@iam.test", first_name="william", last_name="chen", id="will"
-    )
+    account = unittest_data.account1
     db.session.add(account)
-    account_token = zgiam.models.AccountToken(account_id="will", token="...")
+    account_token = unittest_data.account_token1
     db.session.add(account_token)
     db.session.commit()
     with app.test_client() as client:
@@ -61,38 +57,37 @@ def test_delete_good_token(app):
         assert response.status_code == 200
 
 
-def test_delete_bad_token(app):
+def test_delete_bad_token(app, unittest_data):
     app.config.pop("LOGIN_DISABLED")
     db = zgiam.database.get_db()
-    account = zgiam.models.Account(
-        email="william@iam.test", first_name="william", last_name="chen", id="will"
-    )
+    account = unittest_data.account1
     db.session.add(account)
-    account_token = zgiam.models.AccountToken(account_id="will", token="...")
+    account_token = unittest_data.account_token1
     db.session.add(account_token)
     db.session.commit()
     with app.test_client() as client:
         response = client.delete(
             "/api/v1/auth/token",
             data=json.dumps({"token": ".."}),
-            headers={"token": "...", "Content-Type": "application/json"},
+            headers={"token": account_token.token, "Content-Type": "application/json"},
         )
         assert response.status_code == 400
 
 
-def test_get_token(app):
+def test_get_token(app, unittest_data):
     app.config.pop("LOGIN_DISABLED")
     db = zgiam.database.get_db()
-    account = zgiam.models.Account(
-        email="william@iam.test", first_name="william", last_name="chen", id="will"
-    )
+    account = unittest_data.account1
     db.session.add(account)
-    account_token = zgiam.models.AccountToken(account_id="will", token="...")
+    account_token = unittest_data.account_token1
     db.session.add(account_token)
     db.session.commit()
     with app.test_client() as client:
         response = client.get(
-            "/api/v1/auth/token", headers={"token": "...", "Content-Type": "application/json"}
+            "/api/v1/auth/token",
+            headers={"token": account_token.token, "Content-Type": "application/json"},
         )
-        assert json.loads(response.data)["tokens"] == ["..."]
+        assert json.loads(response.data)["tokens"] == [
+            account_token.token for account_token in account.tokens
+        ]
         assert response.status_code == 200

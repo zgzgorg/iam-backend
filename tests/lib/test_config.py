@@ -3,6 +3,8 @@
 # NOTE: we may already test config in other module
 import os
 import logging
+import mock
+import pytest
 import zgiam.lib.config
 
 
@@ -30,3 +32,10 @@ def test_sqlalchemy_debug_config():
     for logger_ in loggers:
         assert logger_.level == logging.DEBUG
     os.environ.unsetenv("IAM_DATABASE_SQLALCHEMY_DEBUG")
+
+
+@mock.patch("zgiam.lib.config._load_config")
+def test_load_config_fail(_load_config_fn_mock):
+    zgiam.lib.config._config = None
+    with pytest.raises(RuntimeError):
+        zgiam.lib.config.get_config()

@@ -26,19 +26,11 @@ def test_login_oauth_token_check_when_login_disable(app):
         assert zgiam.auth.login_oauth_token_check(lambda: "abc")() == "abc"
 
 
-def test_login_oauth_token_check_pass(app):
+def test_login_oauth_token_check_pass(app, unittest_data):
     app.config.pop("LOGIN_DISABLED")
     db = zgiam.database.get_db()
-    account = zgiam.models.Account(
-        email="william@iam.test", first_name="william", last_name="chen", id="will"
-    )
-    oauth = zgiam.models.OAuth(
-        provider="orgiam",
-        provider_user_id="test_provider_user_id",
-        account_id="will",
-        token={"token": "..."},
-    )
-
+    account = unittest_data.account1
+    oauth = unittest_data.oauth1
     db.session.add_all([account, oauth])
     db.session.commit()
 
@@ -53,13 +45,11 @@ def test_login_oauth_token_check_pass(app):
         assert response.status_code == 200
 
 
-def test_login_no_oauth_token_check(app):
+def test_login_no_oauth_token_check(app, unittest_data):
     app.config.pop("LOGIN_DISABLED")
 
     db = zgiam.database.get_db()
-    account = zgiam.models.Account(
-        email="william@iam.test", first_name="william", last_name="chen", id="will"
-    )
+    account = unittest_data.account1
 
     db.session.add(account)
     db.session.commit()
@@ -75,22 +65,16 @@ def test_login_no_oauth_token_check(app):
         assert response.status_code == 401
 
 
-def test_login_oauth_token_expired(app):
+def test_login_oauth_token_expired(app, unittest_data):
     app.config.pop("LOGIN_DISABLED")
     db = zgiam.database.get_db()
     config = zgiam.lib.config.get_config()
     google_oauth_token_expire_time = config.getint("CORE", "GOOGLE_OAUTH_TOKEN_EXPIRE_TIME")
 
-    account = zgiam.models.Account(
-        email="william@iam.test", first_name="william", last_name="chen", id="will"
-    )
-    oauth = zgiam.models.OAuth(
-        provider="orgiam",
-        provider_user_id="test_provider_user_id",
-        account_id="will",
-        token={"token": "..."},
-        created_at=datetime.datetime.utcnow()
-        - datetime.timedelta(seconds=google_oauth_token_expire_time + 1),
+    account = unittest_data.account1
+    oauth = unittest_data.oauth1
+    oauth.created_at = datetime.datetime.utcnow() - datetime.timedelta(
+        seconds=google_oauth_token_expire_time + 1
     )
     db.session.add_all([account, oauth])
     db.session.commit()
@@ -106,25 +90,20 @@ def test_login_oauth_token_expired(app):
         assert response.status_code == 401
 
 
-def test_flask_login_user_loader(db):
-    assert not zgiam.auth._flask_login_user_loader("will")
+def test_flask_login_user_loader(db, unittest_data):
+    account = unittest_data.account1
+    assert not zgiam.auth._flask_login_user_loader(account.id)
     db = zgiam.database.get_db()
-    account = zgiam.models.Account(
-        email="william@iam.test", first_name="william", last_name="chen", id="will"
-    )
-
     db.session.add(account)
     db.session.commit()
-    assert zgiam.auth._flask_login_user_loader("will") == account
+    assert zgiam.auth._flask_login_user_loader(account.id) == account
 
 
-def test_login_account_token_check_pass(app):
+def test_login_account_token_check_pass(app, unittest_data):
     app.config.pop("LOGIN_DISABLED")
     db = zgiam.database.get_db()
-    account = zgiam.models.Account(
-        email="william@iam.test", first_name="william", last_name="chen", id="will"
-    )
-    account_token = zgiam.models.AccountToken(account_id="will", token="...")
+    account = unittest_data.account1
+    account_token = unittest_data.account_token1
     db.session.add_all([account, account_token])
     db.session.commit()
 
@@ -134,17 +113,15 @@ def test_login_account_token_check_pass(app):
         return {"message": "ok"}
 
     with app.test_client() as client:
-        response = client.get("/test", headers={"token": "..."})
+        response = client.get("/test", headers={"token": account_token.token})
         assert response.status_code == 200
 
 
-def test_login_account_token_check_fail(app):
+def test_login_account_token_check_fail(app, unittest_data):
     app.config.pop("LOGIN_DISABLED")
     db = zgiam.database.get_db()
-    account = zgiam.models.Account(
-        email="william@iam.test", first_name="william", last_name="chen", id="will"
-    )
-    account_token = zgiam.models.AccountToken(account_id="will", token="...")
+    account = unittest_data.account1
+    account_token = unittest_data.account_token1
     db.session.add_all([account, account_token])
     db.session.commit()
 
@@ -154,7 +131,7 @@ def test_login_account_token_check_fail(app):
         return {"message": "ok"}
 
     with app.test_client() as client:
-        response = client.get("/test", headers={"token": "...."})
+        response = client.get("/test", headers={"token": "it must fail"})
         assert response.status_code == 401
 
 
@@ -201,16 +178,14 @@ def test_google_logged_in_response_error():
 
 
 @mock.patch("flask_login.login_user")
-def test_google_logged_in_success(_, db):
-    account = zgiam.models.Account(
-        email="will@iam.test", first_name="william", last_name="chen", id="will"
-    )
+def test_google_logged_in_success(_, db, unittest_data):
+    account = unittest_data.account1
     db.session.add(account)
     db.session.commit()
     blueprint = mock.Mock()
     blueprint.name = "test_blueprint"
     blueprint.session = mock.Mock()
     blueprint.session.get.return_value = type(
-        "_", (), {"json": lambda: {"email": "will@iam.test", "id": "12345"}, "ok": True}
+        "_", (), {"json": lambda: {"email": account.email, "id": "12345"}, "ok": True}
     )
     assert not zgiam.auth._google_logged_in(blueprint, {"token": "..."})
