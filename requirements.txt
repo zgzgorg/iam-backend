@@ -28,7 +28,7 @@ flask==2.0.2
     #   flask-login
     #   flask-restx
     #   flask-sqlalchemy
-flask-dance[sqla]==5.0.0
+flask-dance[sqla]==5.1.0
     # via -r requirements.in
 flask-jwt-extended==4.3.1
     # via -r requirements.in
@@ -66,10 +66,6 @@ httplib2==0.20.1
     #   google-auth-httplib2
 idna==3.2
     # via requests
-importlib-metadata==4.8.1
-    # via alembic
-importlib-resources==5.3.0
-    # via alembic
 itsdangerous==2.0.1
     # via flask
 jinja2==3.0.1
@@ -141,10 +137,6 @@ werkzeug==2.0.1
     #   flask-dance
     #   flask-jwt-extended
     #   flask-restx
-zipp==3.6.0
-    # via
-    #   importlib-metadata
-    #   importlib-resources
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
