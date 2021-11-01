@@ -28,7 +28,7 @@ flask==2.0.2
     #   flask-login
     #   flask-restx
     #   flask-sqlalchemy
-flask-dance[sqla]==5.0.0
+flask-dance[sqla]==5.1.0
     # via -r requirements.in
 flask-jwt-extended==4.3.1
     # via -r requirements.in
