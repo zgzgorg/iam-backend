@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file=requirements.txt requirements.in
 #
-alembic==1.7.5
+alembic==1.7.6
     # via -r requirements.in
 aniso8601==9.0.1
     # via flask-restx
