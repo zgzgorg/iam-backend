@@ -10,7 +10,7 @@ attrs==21.2.0
     # via
     #   pytest
     #   pytype
-backports.entry-points-selectable==1.1.0
+backports-entry-points-selectable==1.1.0
     # via virtualenv
 black==21.9b0
     # via -r requirements-dev.in
@@ -32,7 +32,7 @@ greenlet==1.1.2
     # via sqlalchemy
 identify==2.2.14
     # via pre-commit
-importlab==0.6.1
+importlab==0.7
     # via pytype
 iniconfig==1.1.1
     # via pytest
@@ -98,7 +98,7 @@ pytest==6.2.5
     #   pytest-cov
 pytest-cov==3.0.0
     # via -r requirements-dev.in
-pytype==2021.10.18
+pytype==2022.4.26
     # via -r requirements-dev.in
 pyyaml==5.4.1
     # via
@@ -128,17 +128,13 @@ tomli==1.2.1
     #   black
     #   coverage
     #   pep517
-typed-ast==1.4.3
-    # via pytype
 types-mock==4.0.3
     # via -r requirements-dev.in
 typing-extensions==3.10.0.2
     # via
-    #   astroid
     #   black
     #   libcst
     #   mypy
-    #   pylint
     #   sqlalchemy2-stubs
     #   typing-inspect
 typing-inspect==0.7.1
