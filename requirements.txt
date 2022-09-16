@@ -72,7 +72,7 @@ jinja2==3.0.1
     # via flask
 jsonschema==4.0.1
     # via flask-restx
-mako==1.1.5
+mako==1.2.2
     # via alembic
 markupsafe==2.0.1
     # via
