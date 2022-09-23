@@ -82,7 +82,7 @@ oauthlib==3.1.1
     # via
     #   flask-dance
     #   requests-oauthlib
-protobuf==3.19.0
+protobuf==3.19.5
     # via
     #   google-api-core
     #   googleapis-common-protos
