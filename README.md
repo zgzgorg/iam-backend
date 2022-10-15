@@ -47,7 +47,33 @@ Someone should've sent you an `iam_sqlite.cfg`. Place it under the repo's direct
 IAM_CONFIG_PATH=$PWD/iam_sqlite.cfg python zgiam/app.py
 ```
 
-Now, go to <http://127.0.0.1:5000/api/v1/>. You should see a page similar to [this screenshot](https://snippyly.com/img/?q=ppVYktiQC1cBnQtYex8i&EDIT=hnB7q6BAchTXPcMy9BQJ).
+### Explore the API
+
+Now, go to <http://127.0.0.1:5000/api/v1/>. You should see a page similar to this:
+
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/594058/195973670-49612baf-3dc1-4b82-a60d-d2c609ef480d.png">
+
+If you prefer, you can access [a JSON version of the API contract](http://127.0.0.1:5000/api/v1/swagger.json). This JSON adheres to the [Swagger 2.0 specifications][ss].
+
+Swagger is the predecessor of [OpenAPI][oa], so it's quite trivial to convert this Swagger contract to OpenAPI. For example, [this tool][oc] can convert this Swagger 2.0 JSON to [this OpenAPI 3.0 YAML][ym].
+
+[ss]: https://swagger.io/specification/v2/
+[oa]: https://swagger.io/specification/
+[oc]: https://mermade.org.uk/openapi-converter
+[ym]: https://gist.github.com/tslmy/b4386032e69849503bb7d3cf4a44a1c2#file-contract-yaml-L140-L146
+
+With an OpenAPI contract, we can quickly set up a mock server that:
+
+* accessible from the public internet while requiring no authentication (remember that a real `zgzgorg/iam-backend` server is OAuth-protected), and
+* can provide dummy/stub responses.
+
+For example, after importing this contract to [Stoplight](https://stoplight.io/), [the front page of the project](https://zgzg.stoplight.io/docs/iam-backend/branches/main/) immediately presents a mock server endpoint: `https://stoplight.io/mocks/zgzg/iam-backend/99805514` (this may change).
+
+Now, I can send requests to this mock endpoint without causing a havoc in production:
+
+<img width="880" alt="image" src="https://user-images.githubusercontent.com/594058/195974901-35f9f066-cb45-456e-ae02-c8ab2a360ba0.png">
+
+This enables frontend developers to start developing the frontend even without a working backend, thus decoupling front- and backend development.
 
 ## Configuration
 
