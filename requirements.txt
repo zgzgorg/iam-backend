@@ -78,7 +78,7 @@ markupsafe==2.0.1
     # via
     #   jinja2
     #   mako
-oauthlib==3.1.1
+oauthlib==3.2.2
     # via
     #   flask-dance
     #   requests-oauthlib
