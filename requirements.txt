@@ -20,7 +20,7 @@ charset-normalizer==2.0.6
     # via requests
 click==8.0.1
     # via flask
-flask==2.0.2
+flask==2.2.3
     # via
     #   -r requirements.in
     #   flask-dance
@@ -28,7 +28,7 @@ flask==2.0.2
     #   flask-login
     #   flask-restx
     #   flask-sqlalchemy
-flask-dance[sqla]==5.1.0
+flask-dance[sqla]==6.2.0
     # via -r requirements.in
 flask-jwt-extended==4.3.1
     # via -r requirements.in
@@ -74,10 +74,11 @@ jsonschema==4.0.1
     # via flask-restx
 mako==1.1.5
     # via alembic
-markupsafe==2.0.1
+markupsafe==2.1.2
     # via
     #   jinja2
     #   mako
+    #   werkzeug
 oauthlib==3.1.1
     # via
     #   flask-dance
@@ -131,7 +132,7 @@ urllib3==1.26.7
     # via requests
 urlobject==2.4.3
     # via flask-dance
-werkzeug==2.0.1
+werkzeug==2.2.3
     # via
     #   flask
     #   flask-dance
