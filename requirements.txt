@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file=requirements.txt requirements.in
 #
-alembic==1.7.7
+alembic==1.10.0
     # via -r requirements.in
 aniso8601==9.0.1
     # via flask-restx
@@ -125,6 +125,8 @@ sqlalchemy==1.4.26
     #   alembic
     #   flask-dance
     #   flask-sqlalchemy
+typing-extensions==4.5.0
+    # via alembic
 uritemplate==4.1.1
     # via google-api-python-client
 urllib3==1.26.7
